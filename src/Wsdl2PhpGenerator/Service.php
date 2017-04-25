@@ -101,15 +101,14 @@ class Service
         $comment = new PhpDocComment();
         $comment->addParam(PhpDocElementFactory::getParam('array', 'options', 'A array of config values'));
         $comment->addParam(PhpDocElementFactory::getParam('string', 'wsdl', 'The wsdl file to use'));
-        $comment->setAccess(PhpDocElementFactory::getPublicAccess());
 
-        $source = '  foreach (self::$classmap as $key => $value) {
-    if (!isset($options[\'classmap\'][$key])) {
-      $options[\'classmap\'][$key] = $value;
+        $source = '    foreach (self::$classmap as $key => $value) {
+        if (!isset($options[\'classmap\'][$key])) {
+            $options[\'classmap\'][$key] = $value;
+        }
     }
-  }
-  ' . $this->generateServiceOptions() . '
-  parent::__construct($wsdl, $options);' . PHP_EOL;
+    ' . $this->generateServiceOptions() . '
+    parent::__construct($wsdl, $options);' . PHP_EOL;
 
         $function = new PhpFunction('public', '__construct', 'array $options = array(), $wsdl = \'' . $this->config->getInputFile() . '\'', $source, $comment);
 
@@ -119,13 +118,12 @@ class Service
         // Generate the classmap
         $name = 'classmap';
         $comment = new PhpDocComment();
-        $comment->setAccess(PhpDocElementFactory::getPrivateAccess());
         $comment->setVar(PhpDocElementFactory::getVar('array', $name, 'The defined classes'));
 
         $init = 'array(' . PHP_EOL;
         foreach ($this->types as $type) {
             if ($type instanceof ComplexType) {
-                $init .= "  '" . $type->getIdentifier() . "' => '" . $this->config->getNamespaceName() . "\\" . $type->getPhpIdentifier() . "'," . PHP_EOL;
+                $init .= "    '" . $type->getIdentifier() . "' => '" . $this->config->getNamespaceName() . "\\" . $type->getPhpIdentifier() . "'," . PHP_EOL;
             }
         }
         $init = substr($init, 0, strrpos($init, ','));
@@ -140,7 +138,6 @@ class Service
             $name = Validator::validateOperation($operation->getName());
 
             $comment = new PhpDocComment($operation->getDescription());
-            $comment->setAccess(PhpDocElementFactory::getPublicAccess());
             $comment->setReturn(PhpDocElementFactory::getReturn($operation->getReturns(), ''));
 
             foreach ($operation->getParams() as $param => $hint) {
@@ -148,7 +145,7 @@ class Service
                 $comment->addParam(PhpDocElementFactory::getParam($arr['type'], $arr['name'], $arr['desc']));
             }
 
-            $source = '  return $this->__soapCall(\'' . $operation->getName() . '\', array(' . $operation->getParamStringNoTypeHints() . '));' . PHP_EOL;
+            $source = '    return $this->__soapCall(\'' . $operation->getName() . '\', array(' . $operation->getParamStringNoTypeHints() . '));' . PHP_EOL;
 
             $paramStr = $operation->getParamString($this->types);
 

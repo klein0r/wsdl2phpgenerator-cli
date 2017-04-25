@@ -36,8 +36,25 @@ class WsdlDocument extends SchemaDocument
     {
         $this->config = $config;
 
+        $context = stream_context_create(
+            array(
+                'ssl' => array(
+                    // set some SSL/TLS specific options
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true
+                )
+            )
+        );
+
+        libxml_set_streams_context($context);
+
+        $sslOptions = array(
+            'stream_context' => $context
+        );
+
         try {
-            $this->soapClient = new SoapClient($wsdlUrl, $this->config->getOptionFeatures());
+            $this->soapClient = new SoapClient($wsdlUrl, array_merge($this->config->getOptionFeatures(), $sslOptions));
             parent::__construct($wsdlUrl);
         } catch (SoapFault $e) {
             throw new Exception('Unable to load WSDL: ' . $e->getMessage(), $e->getCode(), $e);

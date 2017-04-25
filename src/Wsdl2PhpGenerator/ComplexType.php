@@ -71,7 +71,6 @@ class ComplexType extends Type
         }
 
         $constructorComment = new PhpDocComment();
-        $constructorComment->setAccess(PhpDocElementFactory::getPublicAccess());
         $constructorSource = '';
         $constructorParameters = '';
         $accessors = array();
@@ -84,11 +83,10 @@ class ComplexType extends Type
 
                 if (!$member->getNillable()) {
                     $constructorComment->addParam(PhpDocElementFactory::getParam($type, $name, ''));
-                    $constructorComment->setAccess(PhpDocElementFactory::getPublicAccess());
                     $constructorParameters .= ', $' . $name;
                 }
             }
-            $constructorSource .= '  parent::__construct(' . substr($constructorParameters, 2) . ');' . PHP_EOL;
+            $constructorSource .= '    parent::__construct(' . substr($constructorParameters, 2) . ');' . PHP_EOL;
         }
 
         // Add member variables
@@ -98,14 +96,12 @@ class ComplexType extends Type
 
             $comment = new PhpDocComment();
             $comment->setVar(PhpDocElementFactory::getVar($type, $name, ''));
-            $comment->setAccess(PhpDocElementFactory::getPublicAccess());
             $var = new PhpVariable('public', $name, 'null', $comment);
             $class->addVariable($var);
 
             if (!$member->getNillable()) {
-                $constructorSource .= '  $this->' . $name . ' = $' . $name . ';' . PHP_EOL;
+                $constructorSource .= '    $this->' . $name . ' = $' . $name . ';' . PHP_EOL;
                 $constructorComment->addParam(PhpDocElementFactory::getParam($type, $name, ''));
-                $constructorComment->setAccess(PhpDocElementFactory::getPublicAccess());
                 $constructorParameters .= ', $' . $name;
                 if ($this->config->getConstructorParamsDefaultToNull()) {
                     $constructorParameters .= ' = null';
@@ -114,12 +110,12 @@ class ComplexType extends Type
                 if ($this->config->getCreateAccessors()) {
                     $getterComment = new PhpDocComment();
                     $getterComment->setReturn(PhpDocElementFactory::getReturn($type, ''));
-                    $getter = new PhpFunction('public', 'get' . ucfirst($name), '', '  return $this->' . $name . ';' . PHP_EOL, $getterComment);
+                    $getter = new PhpFunction('public', 'get' . ucfirst($name), '', '    return $this->' . $name . ';' . PHP_EOL, $getterComment);
                     $accessors[] = $getter;
 
                     $setterComment = new PhpDocComment();
                     $setterComment->addParam(PhpDocElementFactory::getParam($type, $name, ''));
-                    $setter = new PhpFunction('public', 'set' . ucfirst($name), '$' . $name, '  $this->' . $name . ' = $' . $name . ';' . PHP_EOL, $setterComment);
+                    $setter = new PhpFunction('public', 'set' . ucfirst($name), '$' . $name, '    $this->' . $name . ' = $' . $name . ';' . PHP_EOL, $setterComment);
                     $accessors[] = $setter;
                 }
             }

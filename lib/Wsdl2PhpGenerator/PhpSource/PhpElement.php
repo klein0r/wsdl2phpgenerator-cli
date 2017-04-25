@@ -31,7 +31,7 @@ abstract class PhpElement
      *
      * @var string The string to use for indention for the element
      */
-    protected $indentionStr;
+    protected $indentionStr = '    ';
 
     /**
      * Function to be overloaded, return the source code of the specialized element

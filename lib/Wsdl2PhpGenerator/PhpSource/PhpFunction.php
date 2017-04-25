@@ -58,7 +58,7 @@ class PhpFunction extends PhpElement
      */
     public function getSource()
     {
-        $ret = '' . PHP_EOL;
+        $ret = '';
 
         if ($this->comment !== null) {
             $ret .= $this->getSourceRow($this->comment->getSource());

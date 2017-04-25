@@ -15,22 +15,13 @@ class PhpDocComment
 {
     /**
      *
-     * @var PhpDocElement A access element
-     * @access private
-     */
-    private $access;
-
-    /**
-     *
      * @var PhpDocElement A var element
-     * @access private
      */
     private $var;
 
     /**
      *
      * @var array Array of PhpDocElements
-     * @access private
      */
     private $params;
 
@@ -76,7 +67,6 @@ class PhpDocComment
     public function __construct($description = '')
     {
         $this->description = $description;
-        $this->access = null;
         $this->var = null;
         $this->params = array();
         $this->throws = array();
@@ -90,15 +80,14 @@ class PhpDocComment
      * Returns the generated source
      *
      * @return string The sourcecoude of the comment
-     * @access public
      */
     public function getSource()
     {
-        $ret = PHP_EOL . '/**' . PHP_EOL;
+        $ret = '';
 
         // TODO: Look over the generation and possible combinations
 
-        $lines = explode(PHP_EOL, $this->description);
+        $lines = array_filter(explode(PHP_EOL, $this->description));
         foreach ($lines as $line) {
             $ret .= ' * ' . trim($line) . PHP_EOL;
         }
@@ -126,25 +115,11 @@ class PhpDocComment
         if ($this->author != null) {
             $ret .= $this->author->getSource();
         }
-        if ($this->access != null) {
-            $ret .= $this->access->getSource();
-        }
         if ($this->return != null) {
             $ret .= $this->return->getSource();
         }
 
-        $ret .= ' */' . PHP_EOL;
-
-        return $ret;
-    }
-
-    /**
-     *
-     * @param PhpDocElement $access Sets the new access
-     */
-    public function setAccess(PhpDocElement $access)
-    {
-        $this->access = $access;
+        return (strlen($ret) > 0) ? PHP_EOL . '/**' . PHP_EOL . $ret . ' */' . PHP_EOL : '';
     }
 
     /**

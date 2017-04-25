@@ -97,7 +97,6 @@ class PhpClass extends PhpElement
         $this->constants = array();
         $this->variables = array();
         $this->functions = array();
-        $this->indentionStr = '    '; // Use 4 spaces as indention, as requested by PSR-2
     }
 
     /**
@@ -143,7 +142,6 @@ class PhpClass extends PhpElement
             foreach ($this->constants as $name => $value) {
                 $ret .= $this->getIndentionStr() . 'const ' . $name . ' = \'' . $value . '\';' . PHP_EOL;
             }
-            $ret .= PHP_EOL;
         }
 
         if (count($this->variables) > 0) {
@@ -160,10 +158,10 @@ class PhpClass extends PhpElement
             }
         }
 
-        $ret .= PHP_EOL . '}' . PHP_EOL;
+        $ret .= PHP_EOL . '}';
 
         if ($this->classExists) {
-            $ret .= PHP_EOL . '}' . PHP_EOL;
+            $ret .= PHP_EOL . '}';
         }
 
         return $ret;
